@@ -31,26 +31,35 @@ app.post("/repositories", (req, res) => {
 });
 
 app.put("/repositories/:id", (req, res) => {
-  // const { id } = req.params
-  // const repository = repositories.find(repository => repository.id === id);
+  const { id } = req.params
+  const { title, url, techs } = req.body;
 
-  // const { title, url, techs } = req.body;
+  const repositoryExist = repositories.find(repository => repository.id === id);
 
-  // const repository = {
-  //   id: uuid(),
-  //   title,
-  //   url,
-  //   techs,
-  //   likes: 0,
-  // }
+  if (!repositoryExist) {
+    return res.status(400).json({ error: 'repository not exists!' });
+  }
 
-  // repositories.push(repository);
+  const repository = { id, title, url, techs, likes: 0 };
 
-  // return res.json(repository);
+  repositories[repositoryExist] = repository;
+
+  return res.json(repository);
 });
 
 app.delete("/repositories/:id", (req, res) => {
-  // TODO
+  const { id } = req.params
+
+  const repository = repositories.find(repository => repository.id === id);
+
+  if (!repository) {
+    return res.status(400).json({ error: 'repository not exists!' });
+  }
+
+  repositories.splice(repository);
+
+  return res.status(204).send();
+
 });
 
 app.post("/repositories/:id/like", (req, res) => {
